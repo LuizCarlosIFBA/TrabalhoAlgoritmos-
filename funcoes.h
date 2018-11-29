@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include "imagem.h"
+char palavras[100][100]; 
 char letraEscolhida [100];
 char certo[100];
 int i;
@@ -25,23 +26,35 @@ ganhou(char under[]){
    system("pause");
 }
 
-perdeu(char palavra[]){
+perdeu(char palavra[],int x,int tamanho){
    printf("Voce perdeu, a palavra correta era: %s\n", palavra);
    printf("As letras que voce digitou foram :%s\n",letraEscolhida);
-   printf("As letras erradas foram : ");	
-   for(int i=0;i<100;i++){
-   		if(certo[i]!=letraEscolhida[i]){
-			printf("%c",tolower(letraEscolhida[i]));
-		}	
-   }
-  	
-   printf("\n ");
-   system("pause");
+   printf("As letras nao descobertas sao : ");
+   bool igual = true;
+
+   for(int i=0;i<=tamanho;i++){ 
+   	     for(int j=0;j<=tamanho;j++){ 	
+       		if(palavras[x][i]!=certo[j]){
+	   				igual = false; 		
+	   		}else{
+			      igual = true; 
+				  break; 
+				}
+		 }
+		 
+		 if(!igual)
+		 	printf("%c",tolower(palavras[x][i]));
+			 	
+	}
+   	
+	
+	printf("\n ");
+   	system("pause");
 }
 //____________________________________________________________________//
 
 //Todo jogo se concentra aqui, alem de retornar o valor dos resultados 
-jogo(char palavraEscolhida[]){
+jogo(char palavraEscolhida[],int x){
    char underscores[100]; // mostra _ou os acertos
    int i=0;
    int tamanho = strlen(palavraEscolhida)-1;
@@ -98,18 +111,18 @@ jogo(char palavraEscolhida[]){
       imprimeUnder(underscores); 
       posi++;
    }
-   perdeu(palavraEscolhida);
+   perdeu(palavraEscolhida,x,tamanho);
 }
 
 //Inicia o jogo e escolhe a palavra
 iniciar(){
    FILE* arquivo = fopen("palavras.txt", "r");
    if(arquivo != NULL){
-      char palavras[100][100]; 
       int i = 0;
       while(fgets(palavras[i++], 100, arquivo)); // captura todas as linhas do arquivos
       srand(time(NULL)); 
-      jogo(palavras[rand()%100]); //escolhe e passa as palavras aleatórias para o jogo
+      int x= rand()%100; 
+      jogo(palavras[x],x); //escolhe e passa as palavras aleatórias para o jogo
       fclose(arquivo);
    }
    else{
